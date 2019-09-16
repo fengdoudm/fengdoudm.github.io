@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-nginx代理多个minio" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/12/nginx代理多个minio/" class="article-date">
+  <time datetime="2019-09-12T10:19:38.000Z" itemprop="datePublished">2019-09-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/12/nginx代理多个minio/">nginx代理多个minio</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <font size="3">
+
+<h2 id="minio集群部署"><a href="#minio集群部署" class="headerlink" title="minio集群部署"></a>minio集群部署</h2><ul>
+<li>下载二进制文件（linux版）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://dl.min.io/server/minio/release/linux-amd64/minio</span><br><span class="line">chmod +x minio</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>示例1: 启动分布式Minio实例，8个节点，每节点1块盘，需要在8个节点上都运行下面的命令。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> MINIO_ACCESS_KEY=&lt;ACCESS_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line"><span class="built_in">export</span> MINIO_SECRET_KEY=&lt;SECRET_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line">minio server http://192.168.1.11/export1 http://192.168.1.12/export2 \</span><br><span class="line">               http://192.168.1.13/export3 http://192.168.1.14/export4 \</span><br><span class="line">               http://192.168.1.15/export5 http://192.168.1.16/export6 \</span><br><span class="line">               http://192.168.1.17/export7 http://192.168.1.18/export8</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>每台机器上都执行相同的命令</p>
+</blockquote>
+<p>架构图<img src="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_8.jpg?raw=true" alt="image"></p>
+<ul>
+<li>示例2: 启动分布式Minio实例，4节点，每节点4块盘，需要在4个节点上都运行下面的命令。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> MINIO_ACCESS_KEY=&lt;ACCESS_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line"><span class="built_in">export</span> MINIO_SECRET_KEY=&lt;SECRET_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line">minio server http://192.168.1.11/export1 http://192.168.1.11/export2 \</span><br><span class="line">               http://192.168.1.11/export3 http://192.168.1.11/export4 \</span><br><span class="line">               http://192.168.1.12/export1 http://192.168.1.12/export2 \</span><br><span class="line">               http://192.168.1.12/export3 http://192.168.1.12/export4 \</span><br><span class="line">               http://192.168.1.13/export1 http://192.168.1.13/export2 \</span><br><span class="line">               http://192.168.1.13/export3 http://192.168.1.13/export4 \</span><br><span class="line">               http://192.168.1.14/export1 http://192.168.1.14/export2 \</span><br><span class="line">               http://192.168.1.14/export3 http://192.168.1.14/export4</span><br></pre></td></tr></table></figure>
+
+<p>架构图<img src="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_16.jpg?raw=true" alt="image"></p>
+<h2 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h2><ul>
+<li><p>配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">upstream minio &#123;</span><br><span class="line">       server 192.168.31.2:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">       server 192.168.31.3:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">       server 192.168.31.4:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">       server 192.168.31.5:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">    &#125;</span><br><span class="line">   server &#123;</span><br><span class="line">    listen 9000;</span><br><span class="line">        server_name localhost;</span><br><span class="line">        charset utf-8;</span><br><span class="line">        default_type text/html;</span><br><span class="line">        location /&#123;</span><br><span class="line">           proxy_set_header Host $http_host;</span><br><span class="line">                proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">                client_body_buffer_size 10M;</span><br><span class="line">                client_max_body_size 10G;</span><br><span class="line">                proxy_buffers 1024 4k;</span><br><span class="line">                proxy_read_timeout 300;</span><br><span class="line">                proxy_next_upstream error timeout http_404;</span><br><span class="line">             proxy_pass http://minio;</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>web页面</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://ip:9000</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://docs.min.io/cn/distributed-minio-quickstart-guide.html" target="_blank" rel="noopener">https://docs.min.io/cn/distributed-minio-quickstart-guide.html</a></li>
+<li><a href="https://www.cnblogs.com/rongfengliang/p/9197315.html" target="_blank" rel="noopener">https://www.cnblogs.com/rongfengliang/p/9197315.html</a></li>
+</ul>
+</font>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/09/12/nginx代理多个minio/" data-id="ck0gjkajy0001d8o0gpx6mmbo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-harbor配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/12/harbor配置/" class="article-date">
+  <time datetime="2019-09-12T10:09:04.000Z" itemprop="datePublished">2019-09-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/12/harbor配置/">harbor配置</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <font size="3">
+
+<h2 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h2><ul>
+<li>系统centos7.6</li>
+<li>harbor v1.8.2</li>
+<li>硬件要求</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Capacity</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CPU</td>
+<td>minimal 2 CPU</td>
+<td>4 CPU is preferred</td>
+</tr>
+<tr>
+<td>Mem</td>
+<td>minimal 4GB</td>
+<td>8GB is preferred</td>
+</tr>
+<tr>
+<td>Disk</td>
+<td>minimal 40GB</td>
+<td>160GB is preferred</td>
+</tr>
+</tbody></table>
+<ul>
+<li>软件要求</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Software</th>
+<th>Version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Docker engine</td>
+<td>version 17.06.0-ce+ or higher</td>
+<td>For installation instructions, please refer to: <a href="https://docs.docker.com/engine/installation/" target="_blank" rel="noopener">docker engine doc</a></td>
+</tr>
+<tr>
+<td>Docker Compose</td>
+<td>version 1.18.0 or higher</td>
+<td>For installation instructions, please refer to: <a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">docker compose doc</a></td>
+</tr>
+<tr>
+<td>Openssl</td>
+<td>latest is preferred</td>
+<td>Generate certificate and keys for Harbor</td>
+</tr>
+</tbody></table>
+<ul>
+<li>harbor组件</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Postgresql</td>
+<td>9.6.10-1.ph2</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>4.0.10-1.ph2</td>
+</tr>
+<tr>
+<td>Clair</td>
+<td>2.0.8</td>
+</tr>
+<tr>
+<td>Beego</td>
+<td>1.9.0</td>
+</tr>
+<tr>
+<td>Chartmuseum</td>
+<td>0.9.0</td>
+</tr>
+<tr>
+<td>Docker/distribution</td>
+<td>2.7.1</td>
+</tr>
+<tr>
+<td>Docker/notary</td>
+<td>0.6.1</td>
+</tr>
+<tr>
+<td>Helm</td>
+<td>2.9.1</td>
+</tr>
+<tr>
+<td>Swagger-ui</td>
+<td>3.22.1</td>
+</tr>
+</tbody></table>
+<h2 id="安装docker-ce"><a href="#安装docker-ce" class="headerlink" title="安装docker-ce"></a>安装docker-ce</h2><ol>
+<li>卸载老版本如果有</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">yum remove docker \</span><br><span class="line">                  docker-client \</span><br><span class="line">                  docker-client-latest \</span><br><span class="line">                  docker-common \</span><br><span class="line">                  docker-latest \</span><br><span class="line">                  docker-latest-logrotate \</span><br><span class="line">                  docker-logrotate \</span><br><span class="line">                  docker-engine</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>配置安装源</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">yum install -y yum-utils \</span><br><span class="line">  device-mapper-persistent-data \</span><br><span class="line">  lvm2</span><br><span class="line">yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://download.docker.com/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>安装docker-ce</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#安装最新版</span></span><br><span class="line">yum install docker-ce</span><br><span class="line"><span class="comment">#安装指定版本</span></span><br><span class="line">yum list docker-ce --showduplicates|grep <span class="string">"^doc"</span>|sort -r</span><br><span class="line">yum -y update &amp;&amp; yum install docker-ce-18.06.2.ce -y</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>启动docker</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br><span class="line">systemctl enable docker</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装docker-compose"><a href="#安装docker-compose" class="headerlink" title="安装docker-compose"></a>安装docker-compose</h2><p>docker-compose是一个二进制文件，下载即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose</span><br><span class="line">sudo chmod +x /usr/local/bin/docker-compose</span><br><span class="line">sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose</span><br></pre></td></tr></table></figure>
+
+<h2 id="harbor安装-http"><a href="#harbor安装-http" class="headerlink" title="harbor安装(http)"></a>harbor安装(http)</h2><ol>
+<li>安装方式</li>
+</ol>
+<p>harbor的安装方式有两种</p>
+<ul>
+<li>在线安装</li>
+</ul>
+<p>安装工具将在线下载harbor镜像，速度有些慢</p>
+<ul>
+<li>离线安装</li>
+</ul>
+<p>安装工具里包含所有需要的镜像，不需要连接外面</p>
+<ol start="2">
+<li>下载在线安装工具</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-online-installer-v1.8.2.tgz</span><br><span class="line">tar xvf harbor-online-installer-v1.8.2.tgz</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>配置harbor</li>
+</ol>
+<p>修改配置文件harbor.yml，需要修改的参数：</p>
+<ul>
+<li><strong>hostname：</strong> 改成本地ip或域名</li>
+<li><strong>data_volume：</strong> 本地物理机存储harbor数据的目录</li>
+<li><strong>harbor_admin_password：</strong> 首次启动时的登录用户名和密码，格式 admin/Harbor12345</li>
+<li><strong>database：</strong><ul>
+<li><strong>password</strong>： postgresql的root密码<blockquote>
+<p>还有其他的一些参数，不是很重要，不再介绍了，想了解的请移步<a href="https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md" target="_blank" rel="noopener">官网</a></p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<p>修改之后的内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hostname: harbor.test1.cn</span><br><span class="line">data_volume: /opt/data/harbor</span><br><span class="line">harbor_admin_password: admin/123123</span><br><span class="line">database:</span><br><span class="line">    password: izene123</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>启动harbor</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./install.sh</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>默认安装，harbor监听的是80端口，docker客户端需要insecure-registries才能访问<br>例如：centos系统，编辑/etc/docker/daemon.json,添加”insecure-registries” : [“harbor.test1.cn”]，重启docker</p>
+</blockquote>
+<ol start="5">
+<li>客户端连接</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker login harbor.test1.cn</span><br><span class="line">docker tag nginx harbor.test1.cn:myproject/nginx:latest</span><br><span class="line">dcoker push harbor.test1.cn:myproject/nginx:latest</span><br></pre></td></tr></table></figure>
+
+<h2 id="harbor安装-https"><a href="#harbor安装-https" class="headerlink" title="harbor安装(https)"></a>harbor安装(https)</h2><ul>
+<li><p>自签名的证书配置<br>参考<a href="https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md" target="_blank" rel="noopener">github文档</a></p>
+</li>
+<li><p>购买的证书</p>
+</li>
+</ul>
+<p>a. 拷贝证书</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /opt/data/harbor/cert</span><br><span class="line">cp *.crt *.key /opt/data/harbor/cert</span><br></pre></td></tr></table></figure>
+
+<p>b. 重新构建配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./prepare</span><br></pre></td></tr></table></figure>
+
+<p>c. 如果harbor已经安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose down -v</span><br></pre></td></tr></table></figure>
+
+<p>d. 再启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>d. 测试</p>
+<p>访问https:yourdomain,显示登陆页面表示一切正常</p>
+<blockquote>
+<p>注意，使用https后，客户端不需要使用insecure-registries，使用方法跟http一样</p>
+</blockquote>
+</font>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/09/12/harbor配置/" data-id="ck0gjkajp0000d8o0djowfqcu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/09/12/nginx代理多个minio/">nginx代理多个minio</a>
+          </li>
+        
+          <li>
+            <a href="/2019/09/12/harbor配置/">harbor配置</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

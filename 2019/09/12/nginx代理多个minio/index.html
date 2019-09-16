@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>nginx代理多个minio | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="minio集群部署 下载二进制文件（linux版）  12https://dl.min.io/server/minio/release/linux-amd64/miniochmod +x minio   示例1: 启动分布式Minio实例，8个节点，每节点1块盘，需要在8个节点上都运行下面的命令。  123456export MINIO_ACCESS_KEY=&amp;lt;ACCESS_KEY&amp;gt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx代理多个minio">
+<meta property="og:url" content="http://yoursite.com/2019/09/12/nginx代理多个minio/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="minio集群部署 下载二进制文件（linux版）  12https://dl.min.io/server/minio/release/linux-amd64/miniochmod +x minio   示例1: 启动分布式Minio实例，8个节点，每节点1块盘，需要在8个节点上都运行下面的命令。  123456export MINIO_ACCESS_KEY=&amp;lt;ACCESS_KEY&amp;gt">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_8.jpg?raw=true">
+<meta property="og:image" content="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_16.jpg?raw=true">
+<meta property="og:updated_time" content="2019-09-12T10:20:24.347Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="nginx代理多个minio">
+<meta name="twitter:description" content="minio集群部署 下载二进制文件（linux版）  12https://dl.min.io/server/minio/release/linux-amd64/miniochmod +x minio   示例1: 启动分布式Minio实例，8个节点，每节点1块盘，需要在8个节点上都运行下面的命令。  123456export MINIO_ACCESS_KEY=&amp;lt;ACCESS_KEY&amp;gt">
+<meta name="twitter:image" content="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_8.jpg?raw=true">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-nginx代理多个minio" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/12/nginx代理多个minio/" class="article-date">
+  <time datetime="2019-09-12T10:19:38.000Z" itemprop="datePublished">2019-09-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      nginx代理多个minio
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <font size="3">
+
+<h2 id="minio集群部署"><a href="#minio集群部署" class="headerlink" title="minio集群部署"></a>minio集群部署</h2><ul>
+<li>下载二进制文件（linux版）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://dl.min.io/server/minio/release/linux-amd64/minio</span><br><span class="line">chmod +x minio</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>示例1: 启动分布式Minio实例，8个节点，每节点1块盘，需要在8个节点上都运行下面的命令。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> MINIO_ACCESS_KEY=&lt;ACCESS_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line"><span class="built_in">export</span> MINIO_SECRET_KEY=&lt;SECRET_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line">minio server http://192.168.1.11/export1 http://192.168.1.12/export2 \</span><br><span class="line">               http://192.168.1.13/export3 http://192.168.1.14/export4 \</span><br><span class="line">               http://192.168.1.15/export5 http://192.168.1.16/export6 \</span><br><span class="line">               http://192.168.1.17/export7 http://192.168.1.18/export8</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>每台机器上都执行相同的命令</p>
+</blockquote>
+<p>架构图<img src="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_8.jpg?raw=true" alt="image"></p>
+<ul>
+<li>示例2: 启动分布式Minio实例，4节点，每节点4块盘，需要在4个节点上都运行下面的命令。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> MINIO_ACCESS_KEY=&lt;ACCESS_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line"><span class="built_in">export</span> MINIO_SECRET_KEY=&lt;SECRET_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line">minio server http://192.168.1.11/export1 http://192.168.1.11/export2 \</span><br><span class="line">               http://192.168.1.11/export3 http://192.168.1.11/export4 \</span><br><span class="line">               http://192.168.1.12/export1 http://192.168.1.12/export2 \</span><br><span class="line">               http://192.168.1.12/export3 http://192.168.1.12/export4 \</span><br><span class="line">               http://192.168.1.13/export1 http://192.168.1.13/export2 \</span><br><span class="line">               http://192.168.1.13/export3 http://192.168.1.13/export4 \</span><br><span class="line">               http://192.168.1.14/export1 http://192.168.1.14/export2 \</span><br><span class="line">               http://192.168.1.14/export3 http://192.168.1.14/export4</span><br></pre></td></tr></table></figure>
+
+<p>架构图<img src="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_16.jpg?raw=true" alt="image"></p>
+<h2 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h2><ul>
+<li><p>配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">upstream minio &#123;</span><br><span class="line">       server 192.168.31.2:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">       server 192.168.31.3:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">       server 192.168.31.4:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">       server 192.168.31.5:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">    &#125;</span><br><span class="line">   server &#123;</span><br><span class="line">    listen 9000;</span><br><span class="line">        server_name localhost;</span><br><span class="line">        charset utf-8;</span><br><span class="line">        default_type text/html;</span><br><span class="line">        location /&#123;</span><br><span class="line">           proxy_set_header Host $http_host;</span><br><span class="line">                proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">                client_body_buffer_size 10M;</span><br><span class="line">                client_max_body_size 10G;</span><br><span class="line">                proxy_buffers 1024 4k;</span><br><span class="line">                proxy_read_timeout 300;</span><br><span class="line">                proxy_next_upstream error timeout http_404;</span><br><span class="line">             proxy_pass http://minio;</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>web页面</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://ip:9000</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://docs.min.io/cn/distributed-minio-quickstart-guide.html" target="_blank" rel="noopener">https://docs.min.io/cn/distributed-minio-quickstart-guide.html</a></li>
+<li><a href="https://www.cnblogs.com/rongfengliang/p/9197315.html" target="_blank" rel="noopener">https://www.cnblogs.com/rongfengliang/p/9197315.html</a></li>
+</ul>
+</font>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/09/12/nginx代理多个minio/" data-id="ck0gjkajy0001d8o0gpx6mmbo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/09/12/harbor配置/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">harbor配置</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/09/12/nginx代理多个minio/">nginx代理多个minio</a>
+          </li>
+        
+          <li>
+            <a href="/2019/09/12/harbor配置/">harbor配置</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
