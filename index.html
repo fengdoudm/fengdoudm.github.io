@@ -2,453 +2,606 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  
-
-  
   <title>大地之后</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="大地之后的博客，永远保持学习的态度">
+  <meta name="keywords" content>
+  <meta name="description" content="大地之后">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="minio集群部署 下载二进制文件（linux版）  12https://dl.min.io/server/minio/release/linux-amd64/miniochmod +x minio   示例1: 启动分布式Minio实例，8个节点，每节点1块盘，需要在8个节点上都运行下面的命令。  123456export MINIO_ACCESS_KEY=&amp;lt;ACCESS_KEY&amp;gt">
 <meta name="keywords" content="运维，it，技术分享，大地之后，fengdoudom">
-<meta property="og:type" content="website">
-<meta property="og:title" content="大地之后">
-<meta property="og:url" content="https://fengdoudm.github.io/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx代理多个minio">
+<meta property="og:url" content="https://fengdoudm.github.io/2019/09/12/nginx代理多个minio/index.html">
 <meta property="og:site_name" content="大地之后">
-<meta property="og:description" content="大地之后的博客，永远保持学习的态度">
+<meta property="og:description" content="minio集群部署 下载二进制文件（linux版）  12https://dl.min.io/server/minio/release/linux-amd64/miniochmod +x minio   示例1: 启动分布式Minio实例，8个节点，每节点1块盘，需要在8个节点上都运行下面的命令。  123456export MINIO_ACCESS_KEY=&amp;lt;ACCESS_KEY&amp;gt">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_8.jpg?raw=true">
+<meta property="og:image" content="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_16.jpg?raw=true">
+<meta property="og:updated_time" content="2019-09-12T10:20:24.347Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="大地之后">
-<meta name="twitter:description" content="大地之后的博客，永远保持学习的态度">
-  
-    <link rel="alternate" href="/atom.xml" title="大地之后" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
+<meta name="twitter:title" content="nginx代理多个minio">
+<meta name="twitter:description" content="minio集群部署 下载二进制文件（linux版）  12https://dl.min.io/server/minio/release/linux-amd64/miniochmod +x minio   示例1: 启动分布式Minio实例，8个节点，每节点1块盘，需要在8个节点上都运行下面的命令。  123456export MINIO_ACCESS_KEY=&amp;lt;ACCESS_KEY&amp;gt">
+<meta name="twitter:image" content="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_8.jpg?raw=true">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.0.1" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-light.css?v=1.0.1" rel="stylesheet">
+
+<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="/js/jquery.autocomplete.min.js?v=1.0.1"></script>
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+<script src="/js/iconfont.js?v=1.0.1"></script>
+
 </head>
-</html>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="false">
+  <input class="theme_blog_path" value>
+</div>
+
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">大地之后</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://fengdoudm.github.io"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-nginx代理多个minio" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/09/12/nginx代理多个minio/" class="article-date">
-  <time datetime="2019-09-12T10:19:38.000Z" itemprop="datePublished">2019-09-12</time>
+<aside class="nav mobile">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
 </a>
+<div class="author">
+    <span>大地</span>
+</div>
+
+<div class="icon">
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/12/nginx代理多个minio/">nginx代理多个minio</a>
-    </h1>
-  
-
-      </header>
+        <a title="rss" href="/atom.xml" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-rss"></use>
+                </svg>
+            
+        </a>
+        
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <font size="3">
+        
+        <a title="github" href="https://github.com/yelog" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-github"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="facebook" href="https://www.facebook.com/faker.tops" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-facebook"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+        
+        <a title="instagram" href="https://www.facebook.com/faker.tops" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-instagram"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="reddit" href="https://www.reddit.com/user/yelog/" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-reddit"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="weibo" href="http://weibo.com/u/2307534817" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-weibo"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="jianshu" href="https://www.jianshu.com/u/ff56736de7cf" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-jianshu"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="zhihu" href="https://www.zhihu.com/people/jaytp/activities" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-zhihu"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+        <a title="oschina" href="https://my.oschina.net/yelog" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-oschina"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+        <a title="email" href="mailto:jaytp@qq.com" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-email"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=872336115&site=qq&menu=yes" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-qq"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="kugou" href="https://www.kugou.com/" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-kugou"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="neteasemusic" href="https://music.163.com/#/user/home?id=88151013" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-neteasemusic"></use>
+                </svg>
+            
+        </a>
+        
+    
+</div>
 
-<h2 id="minio集群部署"><a href="#minio集群部署" class="headerlink" title="minio集群部署"></a>minio集群部署</h2><ul>
-<li>下载二进制文件（linux版）</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://dl.min.io/server/minio/release/linux-amd64/minio</span><br><span class="line">chmod +x minio</span><br></pre></td></tr></table></figure>
+
+
 
 <ul>
-<li>示例1: 启动分布式Minio实例，8个节点，每节点1块盘，需要在8个节点上都运行下面的命令。</li>
+    <li><div class="all active">全部文章<small>(2)</small></div></li>
+    
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> MINIO_ACCESS_KEY=&lt;ACCESS_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line"><span class="built_in">export</span> MINIO_SECRET_KEY=&lt;SECRET_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line">minio server http://192.168.1.11/export1 http://192.168.1.12/export2 \</span><br><span class="line">               http://192.168.1.13/export3 http://192.168.1.14/export4 \</span><br><span class="line">               http://192.168.1.15/export5 http://192.168.1.16/export6 \</span><br><span class="line">               http://192.168.1.17/export7 http://192.168.1.18/export8</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>每台机器上都执行相同的命令</p>
-</blockquote>
-<p>架构图<img src="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_8.jpg?raw=true" alt="image"></p>
-<ul>
-<li>示例2: 启动分布式Minio实例，4节点，每节点4块盘，需要在4个节点上都运行下面的命令。</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> MINIO_ACCESS_KEY=&lt;ACCESS_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line"><span class="built_in">export</span> MINIO_SECRET_KEY=&lt;SECRET_KEY&gt;   <span class="comment">#自定义key内容用户web登录</span></span><br><span class="line">minio server http://192.168.1.11/export1 http://192.168.1.11/export2 \</span><br><span class="line">               http://192.168.1.11/export3 http://192.168.1.11/export4 \</span><br><span class="line">               http://192.168.1.12/export1 http://192.168.1.12/export2 \</span><br><span class="line">               http://192.168.1.12/export3 http://192.168.1.12/export4 \</span><br><span class="line">               http://192.168.1.13/export1 http://192.168.1.13/export2 \</span><br><span class="line">               http://192.168.1.13/export3 http://192.168.1.13/export4 \</span><br><span class="line">               http://192.168.1.14/export1 http://192.168.1.14/export2 \</span><br><span class="line">               http://192.168.1.14/export3 http://192.168.1.14/export4</span><br></pre></td></tr></table></figure>
-
-<p>架构图<img src="https://github.com/minio/minio/blob/master/docs/screenshots/Architecture-diagram_distributed_16.jpg?raw=true" alt="image"></p>
-<h2 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h2><ul>
-<li><p>配置文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">upstream minio &#123;</span><br><span class="line">       server 192.168.31.2:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">       server 192.168.31.3:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">       server 192.168.31.4:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">       server 192.168.31.5:9000 weight=10 max_fails=2 fail_timeout=30s;</span><br><span class="line">    &#125;</span><br><span class="line">   server &#123;</span><br><span class="line">    listen 9000;</span><br><span class="line">        server_name localhost;</span><br><span class="line">        charset utf-8;</span><br><span class="line">        default_type text/html;</span><br><span class="line">        location /&#123;</span><br><span class="line">           proxy_set_header Host $http_host;</span><br><span class="line">                proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">                client_body_buffer_size 10M;</span><br><span class="line">                client_max_body_size 10G;</span><br><span class="line">                proxy_buffers 1024 4k;</span><br><span class="line">                proxy_read_timeout 300;</span><br><span class="line">                proxy_next_upstream error timeout http_404;</span><br><span class="line">             proxy_pass http://minio;</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>web页面</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://ip:9000</span><br></pre></td></tr></table></figure>
-
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="https://docs.min.io/cn/distributed-minio-quickstart-guide.html" target="_blank" rel="noopener">https://docs.min.io/cn/distributed-minio-quickstart-guide.html</a></li>
-<li><a href="https://www.cnblogs.com/rongfengliang/p/9197315.html" target="_blank" rel="noopener">https://www.cnblogs.com/rongfengliang/p/9197315.html</a></li>
-</ul>
-</font>
-      
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
     </div>
-    <footer class="article-footer">
-      <a data-url="https://fengdoudm.github.io/2019/09/12/nginx代理多个minio/" data-id="ck0lwdntr0001zso02mdasaav" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
+    <div><a class="about  hasFriend  site_url"  href="/about">关于</a><a style="width: 50%"  class="friends">友链</a></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="2">
 
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
 
-  
-    <article id="post-harbor配置" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/09/12/harbor配置/" class="article-date">
-  <time datetime="2019-09-12T10:09:04.000Z" itemprop="datePublished">2019-09-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/12/harbor配置/">harbor配置</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <font size="3">
-
-<h2 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h2><ul>
-<li>系统centos7.6</li>
-<li>harbor v1.8.2</li>
-<li>硬件要求</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Resource</th>
-<th>Capacity</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>CPU</td>
-<td>minimal 2 CPU</td>
-<td>4 CPU is preferred</td>
-</tr>
-<tr>
-<td>Mem</td>
-<td>minimal 4GB</td>
-<td>8GB is preferred</td>
-</tr>
-<tr>
-<td>Disk</td>
-<td>minimal 40GB</td>
-<td>160GB is preferred</td>
-</tr>
-</tbody></table>
-<ul>
-<li>软件要求</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Software</th>
-<th>Version</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Docker engine</td>
-<td>version 17.06.0-ce+ or higher</td>
-<td>For installation instructions, please refer to: <a href="https://docs.docker.com/engine/installation/" target="_blank" rel="noopener">docker engine doc</a></td>
-</tr>
-<tr>
-<td>Docker Compose</td>
-<td>version 1.18.0 or higher</td>
-<td>For installation instructions, please refer to: <a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">docker compose doc</a></td>
-</tr>
-<tr>
-<td>Openssl</td>
-<td>latest is preferred</td>
-<td>Generate certificate and keys for Harbor</td>
-</tr>
-</tbody></table>
-<ul>
-<li>harbor组件</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Component</th>
-<th>Version</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Postgresql</td>
-<td>9.6.10-1.ph2</td>
-</tr>
-<tr>
-<td>Redis</td>
-<td>4.0.10-1.ph2</td>
-</tr>
-<tr>
-<td>Clair</td>
-<td>2.0.8</td>
-</tr>
-<tr>
-<td>Beego</td>
-<td>1.9.0</td>
-</tr>
-<tr>
-<td>Chartmuseum</td>
-<td>0.9.0</td>
-</tr>
-<tr>
-<td>Docker/distribution</td>
-<td>2.7.1</td>
-</tr>
-<tr>
-<td>Docker/notary</td>
-<td>0.6.1</td>
-</tr>
-<tr>
-<td>Helm</td>
-<td>2.9.1</td>
-</tr>
-<tr>
-<td>Swagger-ui</td>
-<td>3.22.1</td>
-</tr>
-</tbody></table>
-<h2 id="安装docker-ce"><a href="#安装docker-ce" class="headerlink" title="安装docker-ce"></a>安装docker-ce</h2><ol>
-<li>卸载老版本如果有</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">yum remove docker \</span><br><span class="line">                  docker-client \</span><br><span class="line">                  docker-client-latest \</span><br><span class="line">                  docker-common \</span><br><span class="line">                  docker-latest \</span><br><span class="line">                  docker-latest-logrotate \</span><br><span class="line">                  docker-logrotate \</span><br><span class="line">                  docker-engine</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>配置安装源</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">yum install -y yum-utils \</span><br><span class="line">  device-mapper-persistent-data \</span><br><span class="line">  lvm2</span><br><span class="line">yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://download.docker.com/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>安装docker-ce</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#安装最新版</span></span><br><span class="line">yum install docker-ce</span><br><span class="line"><span class="comment">#安装指定版本</span></span><br><span class="line">yum list docker-ce --showduplicates|grep <span class="string">"^doc"</span>|sort -r</span><br><span class="line">yum -y update &amp;&amp; yum install docker-ce-18.06.2.ce -y</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>启动docker</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br><span class="line">systemctl enable docker</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装docker-compose"><a href="#安装docker-compose" class="headerlink" title="安装docker-compose"></a>安装docker-compose</h2><p>docker-compose是一个二进制文件，下载即可</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose</span><br><span class="line">sudo chmod +x /usr/local/bin/docker-compose</span><br><span class="line">sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose</span><br></pre></td></tr></table></figure>
-
-<h2 id="harbor安装-http"><a href="#harbor安装-http" class="headerlink" title="harbor安装(http)"></a>harbor安装(http)</h2><ol>
-<li>安装方式</li>
-</ol>
-<p>harbor的安装方式有两种</p>
-<ul>
-<li>在线安装</li>
-</ul>
-<p>安装工具将在线下载harbor镜像，速度有些慢</p>
-<ul>
-<li>离线安装</li>
-</ul>
-<p>安装工具里包含所有需要的镜像，不需要连接外面</p>
-<ol start="2">
-<li>下载在线安装工具</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-online-installer-v1.8.2.tgz</span><br><span class="line">tar xvf harbor-online-installer-v1.8.2.tgz</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>配置harbor</li>
-</ol>
-<p>修改配置文件harbor.yml，需要修改的参数：</p>
-<ul>
-<li><strong>hostname：</strong> 改成本地ip或域名</li>
-<li><strong>data_volume：</strong> 本地物理机存储harbor数据的目录</li>
-<li><strong>harbor_admin_password：</strong> 首次启动时的登录用户名和密码，格式 admin/Harbor12345</li>
-<li><strong>database：</strong><ul>
-<li><strong>password</strong>： postgresql的root密码<blockquote>
-<p>还有其他的一些参数，不是很重要，不再介绍了，想了解的请移步<a href="https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md" target="_blank" rel="noopener">官网</a></p>
-</blockquote>
-</li>
-</ul>
-</li>
-</ul>
-<p>修改之后的内容如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hostname: harbor.test1.cn</span><br><span class="line">data_volume: /opt/data/harbor</span><br><span class="line">harbor_admin_password: admin/123123</span><br><span class="line">database:</span><br><span class="line">    password: izene123</span><br></pre></td></tr></table></figure>
-
-<ol start="4">
-<li>启动harbor</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./install.sh</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>默认安装，harbor监听的是80端口，docker客户端需要insecure-registries才能访问<br>例如：centos系统，编辑/etc/docker/daemon.json,添加”insecure-registries” : [“harbor.test1.cn”]，重启docker</p>
-</blockquote>
-<ol start="5">
-<li>客户端连接</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker login harbor.test1.cn</span><br><span class="line">docker tag nginx harbor.test1.cn:myproject/nginx:latest</span><br><span class="line">dcoker push harbor.test1.cn:myproject/nginx:latest</span><br></pre></td></tr></table></figure>
-
-<h2 id="harbor安装-https"><a href="#harbor安装-https" class="headerlink" title="harbor安装(https)"></a>harbor安装(https)</h2><ul>
-<li><p>自签名的证书配置<br>参考<a href="https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md" target="_blank" rel="noopener">github文档</a></p>
-</li>
-<li><p>购买的证书</p>
-</li>
-</ul>
-<p>a. 拷贝证书</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /opt/data/harbor/cert</span><br><span class="line">cp *.crt *.key /opt/data/harbor/cert</span><br></pre></td></tr></table></figure>
-
-<p>b. 重新构建配置文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./prepare</span><br></pre></td></tr></table></figure>
-
-<p>c. 如果harbor已经安装</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose down -v</span><br></pre></td></tr></table></figure>
-
-<p>d. 再启动</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
-
-<p>d. 测试</p>
-<p>访问https:yourdomain,显示登陆页面表示一切正常</p>
-<blockquote>
-<p>注意，使用https后，客户端不需要使用insecure-registries，使用方法跟http一样</p>
-</blockquote>
-</font>
-      
     </div>
-    <footer class="article-footer">
-      <a data-url="https://fengdoudm.github.io/2019/09/12/harbor配置/" data-id="ck0lwdntk0000zso0o410pxpy" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li></ul>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        友情链接
+        <i class="back-title-list"></i>
     </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2019/09/12/nginx代理多个minio/">nginx代理多个minio</a>
-          </li>
-        
-          <li>
-            <a href="/2019/09/12/harbor配置/">harbor配置</a>
-          </li>
-        
-      </ul>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
     </div>
-  </div>
+</div>
+        <div class="title-list">
+    <form onkeydown="if(event.keyCode==13){return false;}">
+        <input class="search" type="text" placeholder="Search..." autocomplete="off"id="local-search-input" >
+        <i class="cross"></i>
+        <span>
+            <label for="tagswitch">Tags:</label>
+            <input id="tagswitch" type="checkbox" style="display: none" />
+            <i id="tagsWitchIcon"></i>
+        </span>
+    </form>
+    <div class="tags-list">
+    
+    <div class="clearfix"></div>
+</div>
 
-  
+    
+    <nav id="title-list-nav">
+        
+        <a  class=""
+           href="/2019/09/12/harbor配置/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="harbor配置">harbor配置</span>
+            <span class="post-date" title="2019-09-12 18:09:04">2019/09/12</span>
+        </a>
+        
+        <a  class=""
+           href="/2019/09/12/nginx代理多个minio/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="nginx代理多个minio">nginx代理多个minio</span>
+            <span class="post-date" title="2019-09-12 18:19:38">2019/09/12</span>
+        </a>
+        
+    </nav>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
 </aside>
+<div class="post index">
+    <div class="pjax">
+        <article class="index">
+            <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Why-Blog"><span class="toc-text">Why Blog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对博客的理解"><span class="toc-text">对博客的理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于叶落阁"><span class="toc-text">关于叶落阁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#博客平台"><span class="toc-text">博客平台</span></a></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+            <h1 id="Why-Blog"><a href="#Why-Blog" class="headerlink" title="Why Blog"></a>Why Blog</h1><h2 id="对博客的理解"><a href="#对博客的理解" class="headerlink" title="对博客的理解"></a>对博客的理解</h2><p>喜欢写Blog的人，会经历三个阶段。</p>
+<blockquote>
+<p>第一阶段，刚接触Blog，觉得很新鲜，试着选择一个免费空间来写。</p>
+</blockquote>
+<blockquote>
+<p>第二阶段，发现免费空间限制太多，就自己购买域名和空间，搭建独立博客。</p>
+</blockquote>
+<blockquote>
+<p>第三阶段，觉得独立博客的管理太麻烦，最好在保留控制权的前提下，让别人来管，自己只负责写文章。</p>
+</blockquote>
+<p>我们每个人的在网络上产生的数据越来越多，这些信息是我们在互联网上存在过的痕迹，值得我们认真对待。但是它们被分散分布在各个网站上。很多时候我们很难将它们聚合在一起，而且各个网站的信息排布方式也没有办法自由控制，所以我们需要一个可以由自己主宰的空间——博客。</p>
+<p>通过博客，我们可以记录自己的生活和成长的轨迹。它不像 Twitter 那样碎片化，也不像 Facebook 那样关系化，它是私人的空间。</p>
+<h2 id="关于叶落阁"><a href="#关于叶落阁" class="headerlink" title="关于叶落阁"></a>关于叶落阁</h2><p><strong>叶落阁</strong> 是阿杰（杨玉杰）的个人站。</p>
+<p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。</p>
+<p>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
+<h2 id="博客平台"><a href="#博客平台" class="headerlink" title="博客平台"></a>博客平台</h2><p>这个博客通过 <a href="https://hexo.io/">Hexo</a> 生成，部署在 <a href="https://pages.github.com/">GitHub Pages</a>，主题 <a href="https://github.com/yelog/hexo-theme-3-hexo">3-hexo</a> 已经在github上开源</p>
+<p>主要功能：</p>
+<ul>
+<li>搜索支持文章标题、标签(#标签)、作者(@作者)</li>
+<li>pad/手机等移动端适配</li>
+<li>页面全局快捷键 <a href='http://yelog.org/2017/03/24/3-hexo-shortcuts/'>3-hexo快捷键说明</a></li>
+</ul>
+
+        </article>
         
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 大地<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        <p>
+            <a href="javascript:void(0)" class="dashang" onclick="dashangToggle()">赏</a>
+        </p>
+        
+        
     </div>
-  </div>
-</footer>
+    <div class="copyright">
+        <p class="footer-entry">©2016-2019 Yelog</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
     </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+    <div class="full-toc">
+        <button class="full"><span class="min "></span></button>
+<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
+<div class="post-toc"><span class="post-toc-title">目录</span>
+    <div class="post-toc-content">
+
+    </div>
+</div>
+<a class="" id="rocket" href="javascript:void(0)"></a>
+    </div>
+</div>
+<div class="acParent"></div>
+
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>喜欢就点赞,疼爱就打赏</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.0.1" ></script>
+
+<script src="/js/script.js?v=1.0.1" ></script>
+<script>
+    var img_resize = 'default';
+    /*作者、标签的自动补全*/
+    $(function () {
+        $('.search').AutoComplete({
+            'data': [],
+            'itemHeight': 20,
+            'width': 418
+        }).AutoComplete('show');
+    })
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $(".post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+        $("input[name=pay]").on("click", function () {
+            if($("input[name=pay]:checked").val()=="weixin"){
+                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
+            } else {
+                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
+            }
+        })
+        
+
+        /*高亮代码块行号*/
+        
+        $('pre code').each(function(){
+            var lines = $(this).text().split('\n').length - 1, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: #fafafa;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+        .nav .hide-list.fullscreen {
+            left: 492px
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
+        border: #e2dede solid 1px;
+        border-radius: 10px;
+        padding: 10px 32px 10px 56px;
+    }
+    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    
+
+    /* 背景图样式 */
+    
+    
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+    .nav-right:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.3;
+        background: url("https://i.loli.net/2019/07/22/5d3521411f3f169375.png");
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+    }
+    
+
+    
+</style>
 
 
-<script src="/js/script.js"></script>
 
 
 
-  </div>
-</body>
+
+
 </html>
